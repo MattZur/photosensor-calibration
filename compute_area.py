@@ -20,6 +20,7 @@ from copy import deepcopy
 from iminuit import Minuit
 from iminuit import cost
 import iminuit
+from scipy import odr
 
 from configuration import DATA_FOLDER
 from configuration import PLOTS_FOLDER
@@ -513,11 +514,7 @@ def make_pretty_plots():
     plt.show()
 
 
-    
-
-
-if __name__ == "__main__":
-    
+def make_background_plot():
     data = np.genfromtxt(DATA_FOLDER + "areas_sipm-411_bkg_57V.csv", delimiter=',')
     data_range = np.max(data) - np.min(data)
     bin_size = 2.7e-12
@@ -529,6 +526,74 @@ if __name__ == "__main__":
     plt.tight_layout()
     plt.savefig(PLOTS_FOLDER + "background_sipm_411.png", dpi=600)
     plt.show()
+
+
+
+
+
+def make_sipm_snr_plot():
+    font = 18
+    sipm_number = ["411", "412", "413", "414", "417", "418", "419"]
+    colors = ["b", "r", "g", "c", "m", "y", "k"]
+    symbols = ['.', 'x', 'o', "s", "D", "v", "^"]
+    breakdown_voltage = [51.5, 51.2, 51.4, 51.4, 51.3, 51.3, 51.3]
+    err_breakdown = [0.3, 0.3, 0.3, 0.2, 0.2, 0.2, 0.2]
+    for index, sipm in enumerate(sipm_number):
+        data = np.genfromtxt(RESULTS_FOLDER + "results_sipm-" + sipm + ".csv", delimiter=',', skip_header=1)
+        plt.errorbar(data[:, 0] - breakdown_voltage[index], data[:, 3], data[:, 4], err_breakdown[index], fmt=symbols[index], capsize=2.5, label=sipm, color=colors[index], alpha=0.7)
+    
+    plt.legend(fontsize=font-5)
+    plt.xlabel("Overvoltage [V]", fontsize=font)
+    plt.ylabel("SNR", fontsize=font)
+    plt.tick_params('both', labelsize=font-2)
+    plt.tight_layout()
+    plt.savefig(PLOTS_FOLDER + "all_snr_sipm.png", dpi=600)
+    plt.show()
+
+
+def simple_linear(x, a):
+    return a * x
+
+def make_sipm_gain_plot():
+    font = 18
+    sipm_number = ["411", "412", "413", "414", "417", "418", "419"]
+    colors = ["b", "r", "g", "c", "m", "y", "k"]
+    symbols = ['.', 'x', 'o', "s", "D", "v", "^"]
+
+    breakdown_voltage = [51.5, 51.2, 51.4, 51.4, 51.3, 51.3, 51.3]
+    err_breakdown = [0.3, 0.3, 0.3, 0.2, 0.2, 0.2, 0.2]
+    for index, sipm in enumerate(sipm_number):
+        data = np.genfromtxt(RESULTS_FOLDER + "results_sipm-" + sipm + ".csv", delimiter=',', skip_header=1)
+        data[:, 1] /= 500 * 10**6
+        data[:, 2] /= 500 * 10**6
+        
+        plt.errorbar(data[:, 0] - breakdown_voltage[index], data[:, 1], data[:, 2], err_breakdown[index], fmt=symbols[index], capsize=2.5, label=sipm, color=colors[index], alpha=0.7)
+        lin_model = odr.Model(simple_linear)
+        fit_data = odr.RealData(data[:, 0] - breakdown_voltage[index], data[:, 1], np.full(np.shape(data[:, 1]), err_breakdown[index]), data[:, 2])
+        p0 = (data[1, 1] - data[0, 1]) / (data[1, 0] - data[0, 0])
+        odr_object = odr.ODR(fit_data, lin_model, beta0=[p0])
+        out = odr_object.run()
+        y_fit = simple_linear(data[:, 0] - breakdown_voltage[index], out.beta)
+        plt.plot(data[:, 0] - breakdown_voltage[index], y_fit, color = colors[index], alpha=0.3)
+    
+    plt.legend(fontsize = font-5)
+    plt.xlabel("Overvoltage [V]", fontsize=font)
+    #plt.rcParams['text.usetex'] = True
+    plt.ylabel(r"Gain [$10^{6}$#e]", fontsize=font)
+    plt.tick_params('both', labelsize=font-2)
+    plt.tight_layout()
+    plt.savefig(PLOTS_FOLDER + "all_gains_sipm.png", dpi=600)
+    plt.show()
+
+
+
+
+
+
+if __name__ == "__main__":
+    make_sipm_snr_plot()
+    
+
 
 
 

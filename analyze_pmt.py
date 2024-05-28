@@ -686,9 +686,9 @@ def fit_gain(voltage, gains, errors, p0=[7, 7e-14]):
     fitter.hesse()
     fitter.minos()
     popt = fitter.values
-    fitter.visualize()
+    #fitter.visualize()
     print(fitter.params)
-    plt.show()
+    #plt.show()
     try:
         perr = fitter.errors
     except:
@@ -698,7 +698,7 @@ def fit_gain(voltage, gains, errors, p0=[7, 7e-14]):
     return popt, perr
 
 
-def guess_datasheet():
+def guess_datasheet(scale = 1):
     """Hardcoded with values from the R8520-506 PMT datasheet to provide a plot for comparison
 
     Returns
@@ -708,6 +708,7 @@ def guess_datasheet():
     """
     voltage = np.array([500, 600, 700, 800, 900])
     gain = np.array([1.6e+4, 9e+4, 3.5e+5, 1e+6, 2.5e+6])
+    gain *= scale
     errors = 0.01 * gain
     popt, perr = fit_gain(voltage, gain, errors)
     
@@ -718,13 +719,65 @@ def guess_datasheet():
 
 
 
+def make_pmt_gain_plot():
+    font = 18
+    pmt_number = ["WA0047", "WA0049"]
+    colors = ["b", "r", "g", "c", "m", "y", "k"]
+    symbols = ['.', 'x', 'o', "s", "D", "v", "^"]
+    for index, pmt in enumerate(pmt_number):
+        data = np.genfromtxt(RESULTS_FOLDER + "results_pmt-" + pmt + ".csv", delimiter=',', skip_header=1)
+        #data[:, 1] /=  10**6
+        #data[:, 2] /=  10**6
+        plt.errorbar(data[:, 0], data[:, 1], data[:, 2], fmt=symbols[index], capsize=2.5, label=pmt, color=colors[index], alpha=1)
+        popt, perr = fit_gain(data[:, 0], data[:, 1], data[:, 2])
+        plt.plot(data[:, 0], power_law(data[:, 0], *popt))
+        if index == 0:
+            data_popt, data_perr = guess_datasheet()
+            plt.plot(data[:, 0], power_law(data[:, 0], *data_popt), color='black', ls='--', label="Datasheet") 
+
+   
+    plt.legend(fontsize=font-5)
+    plt.grid(True, which='both', axis='both')
+    plt.yscale('log')   
+    plt.xscale('log')
+    plt.xlabel("Voltage [V]", fontsize=font)
+    plt.ylabel("Gain [#e]", fontsize=font)
+    plt.tick_params('both', which='major', labelsize=font-2)
+    plt.tick_params('both', which='minor', labelsize=font-5)
+    #plt.title("Gain-Voltage curves")
+    plt.tight_layout()
+    plt.savefig(PLOTS_FOLDER + "all_gains_pmt.png", dpi=600)
+    plt.show()
+
+
+def make_pmt_snr_plot():
+    font = 18
+    pmt_number = ["WA0047", "WA0049"]
+    colors = ["b", "r", "g", "c", "m", "y", "k"]
+    symbols = ['.', 'x', 'o', "s", "D", "v", "^"]
+    for index, pmt in enumerate(pmt_number):
+        data = np.genfromtxt(RESULTS_FOLDER + "results_pmt-" + pmt + ".csv", delimiter=',', skip_header=1)
+        #data[:, 1] /=  10**6
+        #data[:, 2] /=  10**6
+        plt.errorbar(data[:, 0], data[:, 3], data[:, 4], fmt=symbols[index], capsize=2.5, label=pmt, color=colors[index], alpha=1)
+    
+    plt.legend(fontsize = font-5)
+    plt.xlabel("Voltage [V]", fontsize=font)
+    plt.ylabel("SNR", fontsize=font)
+    plt.tick_params('both', labelsize=font-2)
+    plt.tight_layout()
+    plt.savefig(PLOTS_FOLDER + "all_snr_pmt.png", dpi=600)
+    plt.show()
+
+
+
 
 
 
 
 
 if __name__ == "__main__":
-    save_all_areas(pmt_no="0049")
+    make_pmt_snr_plot()
     
     
 

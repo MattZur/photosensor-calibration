@@ -679,8 +679,8 @@ def overvoltages_plot(sipm_no=[411, 412, 413, 414, 417, 418, 419], voltage=4):
         loc = RESULTS_FOLDER
         fname = "results_sipm-" + str(sipm) + ".csv"
         data = np.genfromtxt(loc+fname, delimiter=',', skip_header=1)
-        data[:, 1] /= 200
-        data[:, 2] /= 200
+        data[:, 1] /= 500
+        data[:, 2] /= 500
         p0=[ 1.68893835e+06, -8.67367450e+07]
         popt, pcov = curve_fit(linear, data[:, 0], data[:, 1], sigma=data[:, 2], absolute_sigma=True, p0=p0)
         perr = np.sqrt(np.diag(pcov))
@@ -697,24 +697,31 @@ def overvoltages_plot(sipm_no=[411, 412, 413, 414, 417, 418, 419], voltage=4):
         #debug plot
         print(breakdown_V, err_breakdown_V)
         print(G, err_G)
-        plt.errorbar(data[:, 0], data[:, 1], data[:, 2], ls='None', fmt='.')
-        plt.plot(data[:, 0], linear(data[:, 0], *popt))
-        plt.show()
+        #plt.errorbar(data[:, 0], data[:, 1], data[:, 2], ls='None', fmt='.')
+        #plt.plot(data[:, 0], linear(data[:, 0], *popt))
+        #plt.show()
 
     x = np.linspace(1, len(sipm_no), len(sipm_no))
     plt.errorbar(x, breakdowns, err_breakdowns, fmt='.', ls='None', capsize=2)
     plt.xticks(x, sipm_no)
-    plt.xlabel("SiPM #")
-    plt.ylabel("Breakdown voltage [V]")
+    plt.xlabel("SiPM #", fontsize=16)
+    plt.ylabel("Breakdown voltage [V]", fontsize=16)
+    plt.tick_params('both', labelsize=14)
+    plt.tight_layout()
     plt.savefig(PLOTS_FOLDER + "breakdown_V_all.png", dpi=600)
     plt.show()
 
     plt.errorbar(x, G_overvoltage, err_G_overvoltage, ls='None', fmt='.', capsize=2)
     plt.xticks(x, sipm_no)
-    plt.xlabel("SiPM #")
-    plt.ylabel("Gain[#e]")
+    plt.xlabel("SiPM #", fontsize=16)
+    plt.ylabel("Gain[#e]", fontsize=16)
+    plt.tick_params('both', labelsize=14)
+    plt.tight_layout()
+    
     plt.savefig(PLOTS_FOLDER + "4_overvolts_all.png", dpi=600)
     plt.show()
     
     
 
+if __name__ == "__main__":
+    overvoltages_plot()
