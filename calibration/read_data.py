@@ -3,11 +3,11 @@ import matplotlib.pyplot as plt
 from tqdm import tqdm
 import sys 
 sys.path.append("/home/todor/University/MPhys project/MPhys_project/utils/")
-from plotting_utils import plot2d
+from calibration.utils.plotting_utils import plot2d
 import matplotlib.colors
 import matplotlib.cm as colormap
 from mpl_toolkits.axes_grid1 import make_axes_locatable
-from configuration import PLOTS_FOLDER
+from calibration.configuration import PLOTS_FOLDER
 
 
 

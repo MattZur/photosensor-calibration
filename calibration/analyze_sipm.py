@@ -1,14 +1,14 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from tqdm import tqdm
-import read_data as reader
+import calibration.read_data as reader
 import sys
 #change this folder so the import is correct
 sys.path.append("/home/todor/University/MPhys project/MPhys_project/utils/")
-from plotting_utils import plot1d
-from plotting_utils import get_bin_centres
-from plotting_utils import get_bin_index
-from read_data import make_heatmap
+from calibration.utils.plotting_utils import plot1d
+from calibration.utils.plotting_utils import get_bin_centres
+from calibration.utils.plotting_utils import get_bin_index
+from calibration.read_data import make_heatmap
 from scipy.stats import norm
 from landaupy import landau
 from landaupy import langauss
@@ -17,8 +17,8 @@ from iminuit import Minuit
 from iminuit import cost
 from scipy.optimize import curve_fit
 
-from configuration import PLOTS_FOLDER, DATA_FOLDER, RESULTS_FOLDER
-from compute_area import chi2
+from calibration.configuration import PLOTS_FOLDER, DATA_FOLDER, RESULTS_FOLDER
+from calibration.compute_area import chi2
 
 
 def linear(x, a, b):

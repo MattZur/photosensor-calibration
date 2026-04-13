@@ -2,20 +2,20 @@ import numpy as np
 from scipy.stats import norm
 import matplotlib.pyplot as plt
 
-import read_data as reader
-import compute_area as analyzer
+import calibration.read_data as reader
+import calibration.compute_area as analyzer
 
 from iminuit import cost
 from iminuit import Minuit
 import sys
 
 from scipy.optimize import curve_fit
-from configuration import PLOTS_FOLDER, DATA_FOLDER, RESULTS_FOLDER, LOC_DATA_PMT
+from calibration.configuration import PLOTS_FOLDER, DATA_FOLDER, RESULTS_FOLDER, LOC_DATA_PMT
 
 sys.path.append("/home/todor/University/MPhys project/MPhys_project/utils/")
-from plotting_utils import plot1d
-from plotting_utils import get_bin_centres
-from plotting_utils import get_bin_index
+from calibration.utils.plotting_utils import plot1d
+from calibration.utils.plotting_utils import get_bin_centres
+from calibration.utils.plotting_utils import get_bin_index
 
 
 

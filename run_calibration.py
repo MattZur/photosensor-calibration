@@ -30,9 +30,9 @@ UTILS_PATH = os.path.join(REPO_ROOT, "utils")
 sys.path.insert(0, REPO_ROOT)
 sys.path.insert(0, UTILS_PATH)
 
-import read_data as reader
-import compute_area as area_mod
-import analyze_sipm as sipm_mod
+import calibration.read_data as reader
+import calibration.compute_area as area_mod
+import calibration.analyze_sipm as sipm_mod
 
 # ---------------------------------------------------------------------------
 # CONFIG – change these values to match your dataset

@@ -1,17 +1,17 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from tqdm import tqdm
-import read_data as reader
+import calibration.read_data as reader
 from scipy.stats import crystalball
 from scipy.optimize import curve_fit
 from scipy.signal import savgol_filter
 import sys
 #change this folder so the import is correct
 sys.path.append("/home/todor/University/MPhys project/photosensor-calibration/utils/")
-from plotting_utils import plot1d
-from plotting_utils import get_bin_centres
-from plotting_utils import get_bin_index
-from read_data import make_heatmap
+from calibration.utils.plotting_utils import plot1d
+from calibration.utils.plotting_utils import get_bin_centres
+from calibration.utils.plotting_utils import get_bin_index
+from calibration.read_data import make_heatmap
 from scipy.stats import norm
 from scipy.stats import moyal
 from landaupy import landau
@@ -22,11 +22,11 @@ from iminuit import cost
 import iminuit
 from scipy import odr
 
-from configuration import DATA_FOLDER
-from configuration import PLOTS_FOLDER
-from configuration import RESULTS_FOLDER
-from configuration import LOC_DATA_SIPM
-from configuration import LOC_DATA_PMT
+from calibration.configuration import DATA_FOLDER
+from calibration.configuration import PLOTS_FOLDER
+from calibration.configuration import RESULTS_FOLDER
+from calibration.configuration import LOC_DATA_SIPM
+from calibration.configuration import LOC_DATA_PMT
 
 
 def mirror_crystalball(x, beta, m, loc, scale, norm, offset):
