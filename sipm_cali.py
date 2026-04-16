@@ -359,9 +359,12 @@ def cmd_fit_csv_good(args):
     print(f"Reading {path}")
     areas = np.genfromtxt(path, delimiter=',')
     _fit_csv_core(areas, path, args,
-                  p0=[0, 150, 0.075, 0.075 * 0.1, 3],
+                  p0=[0, 200, 1e4, 1e4 * 0.1, 6],
                   bounds=([-np.inf, 0, 0, 0, 2],
-                          [np.inf, 200, 0.1, 0.05, 10]))
+                          [np.inf, 300, 5e4, 5e4 * 0.1, 15]))
+                #   p0=[0, 200, 0.075, 0.075 * 0.1, 3], # for scope data
+                #   bounds=([-np.inf, 0, 0, 0, 2],
+                #           [np.inf, 300, 0.5, 0.05, 10]))
 
 
 def _fit_csv_core(areas, path, args, p0, bounds):

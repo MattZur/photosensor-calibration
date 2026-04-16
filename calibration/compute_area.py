@@ -103,12 +103,12 @@ def determine_roi(all_waveforms, plot=False):
     amplitude = amplitude + np.abs(smallest)
 
     time = np.array(time)
-    time *= 10**9
+    #time *= 10**9 not needed for mule files see get_waveforms()
 
     hist, edges = np.histogram(time, bins, weights=amplitude)
     plot1d(hist, edges, alpha= 0.2, label='raw signal')
-    hist_filtered = savgol_filter(hist, 60, 9)
-    hist_deriv = savgol_filter(hist, 60, 9, 1, edges[1] - edges[0])
+    hist_filtered = savgol_filter(np.ravel(hist), 20, 4) # 60, 9
+    hist_deriv = savgol_filter(np.ravel(hist), 20, 4, 1, edges[1] - edges[0])
     visual_extrema = np.where(np.abs(hist_deriv) <= np.max(hist_deriv)/30, hist_filtered, np.full(np.shape(hist), np.nan))
     plot1d(hist_filtered, edges, alpha = 0.2, color='r', label='smoothed signal')
     #plt.scatter(get_bin_centres(edges), visual_extrema,  color='r')
